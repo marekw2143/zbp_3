@@ -33,7 +33,7 @@ template<class T> class BST
     
                 while(1)
                 {
-                    if(nn->val > tmp->val)
+                    if(_comparer(nn->val, tmp->val))
                     {
                         if(tmp->right == NULL)
                         {
@@ -66,7 +66,7 @@ template<class T> class BST
 
             while( tmp != NULL && tmp->val != x)
             {
-                if(x > tmp->val)
+                if(_comparer(x, tmp->val))
                     tmp = tmp->right;
                 else
                     tmp = tmp->left;
@@ -115,9 +115,23 @@ template<class T> class BST
         Node<T> *_root;
 };
 
+int bigger_is_bigger(int a, int b)
+{
+    if(a>b)
+        return 1;
+    return 0;
+}
+
+int lower_is_bigger(int a, int b)
+{
+    if(a<b) 
+        return 1;
+    return 0;
+}
+
 int main()
 {   
-    BST<int> drzewo(NULL);
+    BST<int> drzewo(lower_is_bigger);
     
     drzewo.insert(5);
     drzewo.insert(7);
@@ -125,7 +139,7 @@ int main()
 
     Node<int> *a = drzewo.find_node(6);
 
-    std::cout<<drzewo.max()<<std::endl;
-    std::cout<<drzewo.min()<<std::endl;
+    std::cout<<"Max value: "<<drzewo.max()<<std::endl;
+    std::cout<<"Min value: "<<drzewo.min()<<std::endl;
     return 0;
 }
