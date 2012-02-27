@@ -58,6 +58,7 @@ template<class T> class BST
                     }
                 }
             }
+            return true;
         };
 
         Node<T> *find_node(T x)
@@ -82,10 +83,73 @@ template<class T> class BST
 
         bool erase(T x)
         {
-            Node<T> tmp = find_node(x);
+            Node<T> *tmp = find_node(x);
+            Node<T> *parent = _root;
+
             if(tmp)
             {
-                
+                // find parent node
+                while( parent != NULL ) 
+                {
+                    if(_comparer(tmp->val, parent->val))
+                    {
+                        if(parent->right && parent->right->val == tmp->val)
+                            break;
+                        parent = parent->right;
+                    }
+                    else
+                    {
+                        if(parent->left && parent->left->val == tmp->val)
+                            break;
+                        parent = parent->left;
+                    }
+                }
+
+                if( !tmp->left || !tmp->right )// have 0 or 1 children
+                {
+                    Node<T> **ref;
+    
+                    if(tmp == _root)
+                    {
+                        if(tmp->left)
+                            _root = tmp->left;
+                        else
+                            _root = tmp->right;
+                    } else {
+                    
+
+                        if(parent->left && parent->left->val == tmp->val)
+                            ref = &(parent->left);
+                        else
+                            ref = &(parent->right);
+
+                        *ref = tmp->left ? tmp->left : tmp->right;
+                    }
+                } else {
+                    // find successor
+                    Node<T> *succ = tmp->right;
+
+                    while(succ->left)
+                    {
+                        succ = succ->left;
+                    }
+
+                    succ->left = tmp->left;
+
+                    if(tmp == _root)
+                        _root = succ;
+                    else{
+                        if(parent->left && parent->left->val == tmp->val)
+                        {
+                            parent->left = succ;
+                        } else {
+                            parent->right = succ;
+                        }
+                    }
+                    return true;
+                }
+            } else {
+                return false;
             }
         };
 
@@ -131,15 +195,21 @@ int lower_is_bigger(int a, int b)
 
 int main()
 {   
-    BST<int> drzewo(lower_is_bigger);
+    BST<int> drzewo(bigger_is_bigger);
     
-    drzewo.insert(5);
+    drzewo.insert(5); 
     drzewo.insert(7);
     drzewo.insert(6);
+    drzewo.insert(8);
 
     Node<int> *a = drzewo.find_node(6);
 
+    std::cout<<"Found value: "<<a->val<<std::endl;
+
     std::cout<<"Max value: "<<drzewo.max()<<std::endl;
     std::cout<<"Min value: "<<drzewo.min()<<std::endl;
+
+    drzewo.erase(7);
+    drzewo.erase(5);
     return 0;
 }
