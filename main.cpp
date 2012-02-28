@@ -1,4 +1,5 @@
 #include <iostream>
+#include <tr1/memory> // for shared_ptr
 
 template<class T> class Node
 {
@@ -31,8 +32,7 @@ template<class T> class BST
             {
                 Node<T> *tmp = _root;
     
-                while(1)
-                {
+                while(1) {
                     if(_comparer(nn->val, tmp->val))
                     {
                         if(tmp->right == NULL)
@@ -146,8 +146,8 @@ template<class T> class BST
                             parent->right = succ;
                         }
                     }
-                    return true;
                 }
+                return true;
             } else {
                 return false;
             }
@@ -193,23 +193,43 @@ int lower_is_bigger(int a, int b)
     return 0;
 }
 
-int main()
-{   
-    BST<int> drzewo(bigger_is_bigger);
+void test_ordering(int (*cmp)(int a, int b))
+{
+    BST<int> *drzewo = new BST<int>(cmp);
     
-    drzewo.insert(5); 
-    drzewo.insert(7);
-    drzewo.insert(6);
-    drzewo.insert(8);
+    drzewo->insert(5); 
+    drzewo->insert(7);
+    drzewo->insert(6);
+    drzewo->insert(8);
 
-    Node<int> *a = drzewo.find_node(6);
+    Node<int> *a = drzewo->find_node(6);
 
     std::cout<<"Found value: "<<a->val<<std::endl;
 
-    std::cout<<"Max value: "<<drzewo.max()<<std::endl;
-    std::cout<<"Min value: "<<drzewo.min()<<std::endl;
+    std::cout<<"Max value: "<<drzewo->max()<<std::endl;
+    std::cout<<"Min value: "<<drzewo->min()<<std::endl;
 
-    drzewo.erase(7);
-    drzewo.erase(5);
+    drzewo->erase(7);
+    drzewo->erase(5);
+    drzewo->erase(8);
+    drzewo->erase(6);
+}
+
+void test_normal_ordering()
+{
+    std::cout<<"Testing normal ordering"<<std::endl;
+    test_ordering(bigger_is_bigger);
+}
+
+void test_reverse_ordering()
+{
+    std::cout<<"Testing reverse ordering"<<std::endl;
+    test_ordering(lower_is_bigger);
+}
+
+int main()
+{   
+    test_normal_ordering();
+    test_reverse_ordering();
     return 0;
 }
