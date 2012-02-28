@@ -149,6 +149,7 @@ template<class T> class BST
                         }
                     }
                 }
+                delete tmp;
                 return true;
             } else {
                 return false;
