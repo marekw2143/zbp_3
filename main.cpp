@@ -173,6 +173,10 @@ template<class T> class BST
             return tmp->val;
         };
 
+        ~BST(){
+            std::cout<<"Destructor called"<<std::endl;
+        };
+
     protected:
         int (*_comparer)(T a, T b);
     
@@ -195,7 +199,7 @@ int lower_is_bigger(int a, int b)
 
 void test_ordering(int (*cmp)(int a, int b))
 {
-    BST<int> *drzewo = new BST<int>(cmp);
+    std::tr1::shared_ptr< BST<int> > drzewo( new BST<int>(cmp) );
     
     drzewo->insert(5); 
     drzewo->insert(7);
