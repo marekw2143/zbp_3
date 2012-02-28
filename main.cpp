@@ -7,6 +7,8 @@ template<class T> class Node
         Node(T x)
         {
             val = x;
+            left = NULL;
+            right = NULL;
         };
 
         T val;
